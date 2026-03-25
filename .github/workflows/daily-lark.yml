@@ -1,0 +1,27 @@
+name: Daily Crypto Summary to Lark
+
+on:
+  schedule:
+    - cron: '0 2 * * *'   # 11:00 Asia/Tokyo
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deps
+        run: pip install feedparser requests
+
+      - name: Run daily summary
+        env:
+          LARK_WEBHOOK: ${{ secrets.LARK_WEBHOOK }}
+        run: python scripts/daily_lark_summary.py
